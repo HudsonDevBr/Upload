@@ -47,6 +47,16 @@ class PostController extends Controller
         return redirect('/');
     }
 
+
+    public function download($id)
+    {
+        $post = Post::find($id);
+        if (isset($post)) {
+           $path = Storage::disk('public')->getDriver()->getAdapter()->applyPathPrefix($post->arquivo);
+           return response()->download($path);
+        }
+        return redirect('/');
+    }
     /**
      * Display the specified resource.
      *
@@ -92,7 +102,7 @@ class PostController extends Controller
         $post = Post::find($id);
         if (isset($post)) {
             $arquivo = $post->arquivo;
-            Storage::delete(disk('public')->delete($arquivo));
+            Storage::disk('public')->delete($arquivo);
             $post->delete();
         }
     return redirect('/');
